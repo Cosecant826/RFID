@@ -1,5 +1,4 @@
-#include"rc522.h"
-#include <string.h> 
+#include "rc522.h"
 unsigned char flag;
 void delay_ns(unsigned int ns) {
     unsigned int i;
@@ -10,9 +9,6 @@ void delay_ns(unsigned int ns) {
     }
 }
 
-//------------------------------------------
-// ¶Á´ÈëÒ»¸öbyte
-//------------------------------------------
 unsigned char SPIReadByte(void) {
     unsigned char SPICount;                                       // Counter used to clock out the data
     unsigned char SPIData;
@@ -31,9 +27,6 @@ unsigned char SPIReadByte(void) {
     }                                                             // and loop back
     return (SPIData);                              // Finally return the read data
 }
-//------------------------------------------
-// ÁÐ´ÈëÒ»¸öbyte
-//------------------------------------------
 void SPIWriteByte(unsigned char SPIData) {
     unsigned char  SPICount;                                       // Counter used to clock out the data
     for(SPICount = 0; SPICount < 8; SPICount++) {
@@ -489,7 +482,7 @@ char PcdValue(unsigned char dd_mode,unsigned char addr,unsigned char *pValue)
     char status;
     unsigned int  unLen;
     unsigned char ucComMF522Buf[MAXRLEN];
-    //unsigned char i;
+    unsigned char i;
 
     ucComMF522Buf[0] = dd_mode;
     ucComMF522Buf[1] = addr;
@@ -502,9 +495,9 @@ char PcdValue(unsigned char dd_mode,unsigned char addr,unsigned char *pValue)
 
     if (status == MI_OK)
     {
-        memcpy(ucComMF522Buf, pValue, 4);
-        //for (i=0; i<16; i++)
-        //{    ucComMF522Buf[i] = *(pValue+i);   }
+        //memcpy(ucComMF522Buf, pValue, 4);
+        for (i=0; i<16; i++)
+        {    ucComMF522Buf[i] = *(pValue+i);   }
         CalulateCRC(ucComMF522Buf,4,&ucComMF522Buf[4]);
         unLen = 0;
         status = PcdComMF522(PCD_TRANSCEIVE,ucComMF522Buf,6,ucComMF522Buf,&unLen);

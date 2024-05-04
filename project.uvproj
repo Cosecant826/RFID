@@ -186,7 +186,7 @@
         </Utilities>
         <Target51>
           <Target51Misc>
-            <MemoryModel>0</MemoryModel>
+            <MemoryModel>2</MemoryModel>
             <RTOS>0</RTOS>
             <RomSize>2</RomSize>
             <DataHold>0</DataHold>
@@ -233,7 +233,7 @@
               <RCB>
                 <Type>0</Type>
                 <StartAddress>0x0</StartAddress>
-                <Size>0x0</Size>
+                <Size>0xffff</Size>
               </RCB>
               <RXB>
                 <Type>0</Type>
@@ -348,7 +348,7 @@
             <DataOverlaying>1</DataOverlaying>
             <OverlayString></OverlayString>
             <MiscControls></MiscControls>
-            <DisableWarningNumbers></DisableWarningNumbers>
+            <DisableWarningNumbers>16</DisableWarningNumbers>
             <LinkerCmdFile></LinkerCmdFile>
             <Assign></Assign>
             <ReserveString></ReserveString>
@@ -380,16 +380,6 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>rc522.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\rc522.h</FilePath>
-            </File>
-            <File>
-              <FileName>rc522.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\rc522.c</FilePath>
             </File>
             <File>
               <FileName>define.h</FileName>
@@ -445,6 +435,16 @@
               <FileName>Timer.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>rc522.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\rc522.c</FilePath>
+            </File>
+            <File>
+              <FileName>rc522.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\rc522.h</FilePath>
             </File>
           </Files>
         </Group>
