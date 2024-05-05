@@ -147,7 +147,7 @@ void Lcd12864_ShowFloatNum(unsigned char X, unsigned char Y, unsigned long Num, 
         }
         else
         {
-            Lcd12864_WriteData(Num / LCD_Pow(10, i - 2) % 10 + '0');
+            Lcd12864_WriteData(Num / LCD_Pow(10, i - 1) % 10 + '0');
         }
     }
 }
