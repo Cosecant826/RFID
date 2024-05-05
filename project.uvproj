@@ -456,6 +456,36 @@
               <FileType>1</FileType>
               <FilePath>.\HX711.c</FilePath>
             </File>
+            <File>
+              <FileName>syn6288.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\syn6288.c</FilePath>
+            </File>
+            <File>
+              <FileName>syn6288.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\syn6288.h</FilePath>
+            </File>
+            <File>
+              <FileName>sysEEPROM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\sysEEPROM.c</FilePath>
+            </File>
+            <File>
+              <FileName>sysEEPROM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\sysEEPROM.h</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\uart.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

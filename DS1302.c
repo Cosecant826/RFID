@@ -1,9 +1,9 @@
 #include <STC12C5A60S2.H>
 
 //引脚定义
-sbit DS1302_SCLK = P3 ^ 6;
-sbit DS1302_IO = P3 ^ 4;
-sbit DS1302_CE = P3 ^ 5;
+sbit DS1302_SCLK = P2^0;
+sbit DS1302_IO = P2^1;
+sbit DS1302_CE = P2^2;
 
 //寄存器写入地址/指令定义
 #define DS1302_SECOND		0x80
