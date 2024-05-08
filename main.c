@@ -673,8 +673,7 @@ void addcode()
     {
         KeyNum = Key();
 
-        if (KeyNum == 13) break;
-        else if (KeyNum <= 10 && KeyNum > 0)
+        if (KeyNum <= 10 && KeyNum > 0)
         {
             if (i < 5)
             {
@@ -713,17 +712,7 @@ void addcode()
             {
                 KeyNum = Key();
 
-                if (KeyNum == 13)
-                {
-                    i = 0;
-                    Fruitcode = 0;
-                    Lcd12864_Init();
-                    Lcd12864_ShowString (0, 0, " -= 添加商品 =- ");
-                    Lcd12864_ShowString (1, 0, "编码:        ");
-                    KeyNum = 0;
-                    break;
-                }
-                else if (KeyNum <= 10 && KeyNum > 0)
+                if (KeyNum <= 10 && KeyNum > 0)
                 {
                     if (i < 4)
                     {
@@ -798,10 +787,21 @@ void addcode()
                     Delay (1500);
                     goto exit;
                 }
+                else if (KeyNum)
+                {
+                    i = 0;
+                    Fruitcode = 0;
+                    Lcd12864_Init();
+                    Lcd12864_ShowString (0, 0, " -= 添加商品 =- ");
+                    Lcd12864_ShowString (1, 0, "编码:        ");
+                    KeyNum = 0;
+                    break;
+                }
 
                 KeyNum = 0;
             }
         }
+        else if (KeyNum) break;
 
         KeyNum = 0;
     }
@@ -811,11 +811,6 @@ exit:
     i = 0;
     showmenu1();
 }
-
-
-
-
-
 
 void deletecost (u8 index)
 {
@@ -880,47 +875,6 @@ start:	skipflag = 0;
         else if (skipflag == 2) goto end;
     }
 
-//
-//    while (!KeyNum)
-//    {
-//        KeyNum = Key();
-//        if (KeyNum == 13) break;
-//        else if (KeyNum == 1)
-//        {
-//            Lcd12864_ShowString (costmenurun, 0, "  ");
-//            if (costmenurun % 3 == 1)
-//            {
-//                costmenurun = maxcostmenurun;
-//                Lcd12864_ShowString (costmenurun, 0, " >");
-//            }
-//            else
-//            {
-//                costmenurun--;
-//                Lcd12864_ShowString (costmenurun, 0, " >");
-//            }
-//        }
-//        else if (KeyNum == 2)
-//        {
-//            Lcd12864_ShowString (costmenurun, 0, "  ");
-//            costmenurun %= maxcostmenurun;
-//            costmenurun++;
-//            Lcd12864_ShowString (costmenurun, 0, " >");
-//        }
-//        else if (KeyNum == 16)
-//        {
-//            pay();
-//            break;
-//        }
-//        else if (KeyNum == 12)
-//        {
-//            costmenuflag[point[costmenurun - 1]] = 0;
-//            allprice -= stepsale[point[costmenurun - 1]];
-//            firweight[point[costmenurun - 1]] = 0;
-//            costmenurun = 0;
-//            goto show;
-//        }
-//        KeyNum = 0;
-//    }
 end:
     skipflag = 0;
     costmenurun = 0;
