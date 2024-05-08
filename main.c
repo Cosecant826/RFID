@@ -20,9 +20,9 @@ float xdata pricecode[10] = {0, 5.6, 7.2, 10.3};
 unsigned char code RFID1[16] = {0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x01, 0xFE};
 float Weight_Shiwu, Weight_Maopi;
 
-u8 KeyNum, LastKeyNum[5], i, status, firweight[20], lastweight[20], fruitflag, maxtime[3], costmenuflag[20], costfruit[20], t, costmenurun = 0, maxcostmenurun, maxshow, name[20][10] = {"苹果", "香蕉", "桔子", "香瓜", "新品", "新一", "新二", "新三", "新四", "新五", "新六", "新七", "新八", "新九", "新十", "新土", "新干", "新王", "新田", "新申"}, point[20];
+u8 KeyNum, skipflag, LastKeyNum[5], i, status, firweight[8], lastweight[8], fruitflag, maxtime[3], costmenuflag[8], costfruit[8], t, costmenurun = 0, maxcostmenurun, maxshow, point[8], code name[8][10] = {"苹果", "香蕉", "桔子", "香瓜", "新品", "新一", "新二", "总价"};
 float kgprice, sayprice;
-u16 Fruitcode = 0,  maxcost = 0, sale[10], allprice = 0, price = 0, getweight, wallet, stepsale[20], richvalue, newprice;
+u16 Fruitcode = 0,  maxcost = 0, sale[8], allprice = 0, price = 0, getweight, wallet, stepsale[8], richvalue, newprice;
 
 
 
@@ -36,194 +36,36 @@ u16 Fruitcode = 0,  maxcost = 0, sale[10], allprice = 0, price = 0, getweight, w
 ////#define KV_MD                      (0x08)          // 中
 ////#define KV_LF                      (0x10)          // 左
 ////#define KV_RT                      (0x20)          // 右
-//u8 M_MENU_NUM;
-//#define  PAGE_DISP_NUM  4
+u8 M_MENU_NUM;
+u8  PAGE_DISP_NUM = 3;
 
-//typedef struct
-//{
-//    u8 Cursor;             // 光标值(当前光标位置)
-//    u8 PageNo;             // 菜单页(显示开始项)
-//    u8 Index;             // 菜单索引(当前选择的菜单项)
-//    u8 DispNum;             // 显示项数(每页可以现在菜单项)
-//    u8 MaxPage;             // 最大页数(最大有多少种显示页)
-//} MENU_PRMT;
-//MENU_PRMT code MenuPrmt;  //ext ern 
-//// 菜单执行
-//typedef struct
-//{
-//    u8 *MenuItem;            // 菜单项目名称
-//    u16 *stesale;
-//    void (*ItemHook) (void);                   // 要运行的菜单函数
-//} MENU_TABLE;
+typedef struct
+{
+    u8 Cursor;             // 光标值(当前光标位置)
+    u8 PageNo;             // 菜单页(显示开始项)
+    u8 Index;             // 菜单索引(当前选择的菜单项)
+    u8 DispNum;             // 显示项数(每页可以现在菜单项)
+    u8 MaxPage;             // 最大页数(最大有多少种显示页)
+} MENU_PRMT;
+MENU_PRMT  MenuPrmt;  //ext ern
+// 菜单执行
+typedef struct
+{
+    u8 *MenuItem;            // 菜单项目名称
+    u16 stesale;
+    void (*ItemHook) (u8 index);                   // 要运行的菜单函数
+} MENU_TABLE;
 
-//MENU_TABLE code MMenu[20];
+MENU_TABLE data MMenu[8];
 
-//void deletecost()
-//{
-//    costmenuflag[point[costmenurun - 1]] = 0;
-//    allprice -= stepsale[point[costmenurun - 1]];
-//    firweight[point[costmenurun - 1]] = 0;
-//    costmenurun = 0;
-//}
-//void null()
-//{
-//}
-
-////3.初始化菜单参数
-
-///**************************************************************************************
-//* FunctionName   : AppMenuPrmtInit()
-//* Description    : 初始化菜单参数
-//* EntryParameter : None
-//* ReturnValue    : None
-//**************************************************************************************/
-//void AppMenuPrmtInit (void)
-//{
-//    MenuPrmt.Cursor  = 0;           // 光标清零
-//    MenuPrmt.PageNo = 0;    //        页清零
-//    MenuPrmt.Index   = 0;           //        索引清零
-//}
-
-////4.菜单显示设置
-
-///**************************************************************************************
-//* FunctionName   : App_MenuSet()
-//* Description    : 设置菜单显示
-//* EntryParameter : num - 页菜单显示项，page - 最多页数
-//* ReturnValue    : None
-//**************************************************************************************/
-//void App_MenuSet (u8 num, u8 page)
-//{
-//    MenuPrmt.DispNum = num;   //        页最多显示项目数
-//    MenuPrmt.MaxPage = page;  //        最多页数
-//}
-
-////5.菜单显示
-
-///**************************************************************************************
-//* FunctionName   : App_MenuDisplay()
-//* Description    : 显示菜单
-//* EntryParameter : page - 显示页，dispNum - 每一页的显示项，cursor - 光标位置
-//* ReturnValue    : None
-//**************************************************************************************/
-//void App_MenuDisplay (MENU_TABLE *menu, u8 page, u8 dispNum, u8 cursor)
-//{
-//    u8 i;
-
-//    for (i = 0;  i < dispNum; i++)
-//    {
-//        if (cursor == i)
-//        {
-////            LCMDisplayStrRvs(0, (i+1)*2, menu[page+i].MenuItem); // 反白显示菜单项
-//					Lcd12864_ShowString(i+1,1, menu[page+i].MenuItem);
-//					Lcd12864_ShowString(i+1,0, " >");
-//        }
-//        else
-//        {
-////            LCMDisplayStr(0, (i+1)*2, menu[page+i].MenuItem);         // 显示菜单项
-//					Lcd12864_ShowString(i+1,1, menu[page+i].MenuItem);
-//					Lcd12864_ShowString(i+1,0, "  ");
-//        }
-//    }
-//}
-
-////6.菜单翻滚
-
-///**************************************************************************************
-//* FunctionName   : App_MenuMove()
-//* Description    : 菜单移动
-//* EntryParameter : None
-//* ReturnValue    : 有确认返回0，否则返回1
-//**************************************************************************************/
-//u8 App_MenuMove (u8 key)
-//{
-//    u8 rValue = 1;
-
-//    switch (key)
-//    {
-//    case 1:                            // 向上
-//        if (MenuPrmt.Cursor != 0)         // 光标不在顶端
-//        {
-//            MenuPrmt.Cursor--;             // 光标上移
-//        }
-//        else                               // 光标在顶端
-//        {
-//            if (MenuPrmt.PageNo != 0)      // 页面没有到最小
-//            {
-//                MenuPrmt.PageNo--;          // 向上翻
-//            }
-//            else
-//            {
-//                MenuPrmt.Cursor = MenuPrmt.DispNum - 1;        // 光标到底
-//                MenuPrmt.PageNo        = MenuPrmt.MaxPage - 1; // 最后页
-//            }
-//        }
-
-//        break;
-
-//    case 2:                               // 向下
-//        if (MenuPrmt.Cursor < MenuPrmt.DispNum - 1) // 光标没有到底，移动光标
-//        {
-//            MenuPrmt.Cursor++;           // 光标向下移动
-//        }
-//        else                             // 光标到底
-//        {
-//            if (MenuPrmt.PageNo < MenuPrmt.MaxPage - 1)  // 页面没有到底，页面移动
-//            {
-//                MenuPrmt.PageNo++;       // 下翻一页
-//            }
-//            else                         // 页面和光标都到底，返回开始页
-//            {
-//                MenuPrmt.Cursor = 0;
-//                MenuPrmt.PageNo = 0;
-//            }
-//        }
-
-//        break;
-
-//    case 12:                   // 确认
-//        MenuPrmt.Index = 17;      // 计算执行项的索引
-//        rValue = 0;
-//        break;
-//		case 16:                   // 确认
-//        MenuPrmt.Index = 18;      // 计算执行项的索引
-//        rValue = 0;
-//        break;
-
-//    default:
-//        break;
-//    }
-
-//    return rValue;           // 返回执行索引
-//}
-
-////7.菜单实现
-///**************************************************************************************
-//* FunctionName   : App_ManageMenu()
-//* Description    : 管理菜单
-//* EntryParameter : None
-//* ReturnValue    : None
-//**************************************************************************************/
-//void App_ManageMenu (void)
-//{
-//    Lcd12864_ShowString (0, 0, " -= 购物清单 =- ");      // 菜单标题显示
-//    App_MenuSet (PAGE_DISP_NUM, M_MENU_NUM - PAGE_DISP_NUM + 1); // 页显示3项，7个菜单项5页显示
-//    App_MenuDisplay (MMenu, MenuPrmt.PageNo, MenuPrmt.DispNum, MenuPrmt.Cursor); // 显示菜单项
-
-//    if(!KeyNum)
-//    {
-//        if (App_MenuMove (KeyNum) == 0x00)  // 菜单移动
-//        {
-////            LCMClearScreen (LCM_WHITE);           // 清屏
-//					Lcd12864_Init();
-//            MMenu[MenuPrmt.Index].ItemHook();      // 执行相应项
-//        }
-
-//        KeyNum=0;                    // 清除按键值
-//    }
-//}
-
-
+void showmenu1()
+{
+    Lcd12864_Init();
+    Lcd12864_ShowString (0, 0, " - -欢迎光临- - ");
+    Lcd12864_ShowString (1, 0, "编码:        ");
+    Lcd12864_ShowString (2, 0, "重量:       公斤");
+    Lcd12864_ShowString (3, 0, "总价:       元");
+}
 
 char check_card (unsigned char block)  	//验证卡  读取卡
 {
@@ -251,6 +93,264 @@ char check_card (unsigned char block)  	//验证卡  读取卡
 
     return 0;
 }
+
+
+void pay()
+{
+    Lcd12864_Init();
+    Lcd12864_ShowString (0, 0, "请刷卡");
+    KeyNum = 0;
+
+    while (status)
+    {
+        status = check_card (1);
+        KeyNum = Key();
+
+        if (KeyNum) break;
+    }
+
+    if (KeyNum)
+    {
+        KeyNum = 0;
+        goto exit;
+    }
+
+    PcdRead (1, &shu);
+    wallet = shu[0] + shu[1] * 256;
+
+    if (wallet < allprice)
+        Lcd12864_ShowString (2, 0, "余额不足！！");
+    else
+    {
+        Lcd12864_ShowString (2, 0, "消费:       元");
+        Lcd12864_ShowNum (2, 3, allprice / 100, 3);
+        Lcd12864_WriteData (0x2E);
+        Lcd12864_ShowNum (2, 5, allprice % 100, 2);
+        value1[0] = allprice % 256;
+        value1[1] = allprice / 256 % 256;
+        value1[2] = allprice / 65536 % 256;
+        sayprice = allprice / 100.0;
+        PcdValue (0xC0, 1, value1);
+
+        for (i = 0; i < 7; i++)
+        {
+            costmenuflag[i] = 0;
+            lastweight[i] += firweight[i];
+            firweight[i] = 0;
+        }
+
+        if (allprice >= maxcost)
+        {
+            DS1302_ReadTime();
+            maxcost = allprice;
+            maxtime[0] = DS1302_Time[1];
+            maxtime[1] = DS1302_Time[4];
+            maxtime[2] = DS1302_Time[5];
+        }
+
+        allprice = 0;
+        Lcd12864_ShowString (3, 0, "余额:       元");
+
+        if (RevBuffer[0] == 19 && RevBuffer[1] == 206 && RevBuffer[2] == 59 && RevBuffer[3] == 45)
+            Lcd12864_ShowString (1, 0, "蓝卡用户，您好！");
+        else if (RevBuffer[0] == 3 && RevBuffer[1] == 102 && RevBuffer[2] == 156 && RevBuffer[3] == 40)
+            Lcd12864_ShowString (1, 0, "白卡用户，您好！");
+
+        PcdRead (1, &shu);
+        wallet = shu[0] + shu[1] * 256;
+        Lcd12864_ShowNum (3, 3, wallet / 100, 3);
+        Lcd12864_WriteData (0x2E);
+        Lcd12864_ShowNum (3, 5, wallet % 100, 2);
+        SYN6288_Say ("扣款: %6.2f元", sayprice);
+    }
+
+    Delay (3000);
+exit:
+    Fruitcode = 0;
+    i = 0;
+}
+
+
+//void null()
+//{
+//}
+
+//3.初始化菜单参数
+
+/**************************************************************************************
+* FunctionName   : AppMenuPrmtInit()
+* Description    : 初始化菜单参数
+* EntryParameter : None
+* ReturnValue    : None
+**************************************************************************************/
+void AppMenuPrmtInit (void)
+{
+    MenuPrmt.Cursor  = 0;           // 光标清零
+    MenuPrmt.PageNo = 0;    //        页清零
+    MenuPrmt.Index   = 0;           //        索引清零
+}
+
+//4.菜单显示设置
+
+/**************************************************************************************
+* FunctionName   : App_MenuSet()
+* Description    : 设置菜单显示
+* EntryParameter : num - 页菜单显示项，page - 最多页数
+* ReturnValue    : None
+**************************************************************************************/
+void App_MenuSet (u8 num, u8 page)
+{
+    MenuPrmt.DispNum = num;   //        页最多显示项目数
+    MenuPrmt.MaxPage = page;  //        最多页数
+}
+
+//5.菜单显示
+
+/**************************************************************************************
+* FunctionName   : App_MenuDisplay()
+* Description    : 显示菜单
+* EntryParameter : page - 显示页，dispNum - 每一页的显示项，cursor - 光标位置
+* ReturnValue    : None
+**************************************************************************************/
+void App_MenuDisplay (MENU_TABLE *menu, u8 page, u8 dispNum, u8 cursor)
+{
+    u8 i;
+
+    for (i = 0;  i < dispNum + 1 && i < t + 1; i++)
+    {
+        if (cursor == i)
+        {
+//            LCMDisplayStrRvs(0, (i+1)*2, menu[page+i].MenuItem); // 反白显示菜单项
+            Lcd12864_ShowString (i + 1, 0, " >");
+            Lcd12864_ShowString (i + 1, 1, menu[page + i].MenuItem);
+            Lcd12864_ShowString (i + 1, 3, ":");
+            Lcd12864_ShowString (i + 1, 7, "元");
+            Lcd12864_ShowNum (i + 1, 4, MMenu[page + i].stesale / 100, 3);
+            Lcd12864_WriteData (0x2E);
+            Lcd12864_ShowNum (i + 1, 6, MMenu[page + i].stesale % 100, 2);
+        }
+        else
+        {
+//            LCMDisplayStr(0, (i+1)*2, menu[page+i].MenuItem);         // 显示菜单项
+            Lcd12864_ShowString (i + 1, 0, "  ");
+            Lcd12864_ShowString (i + 1, 1, menu[page + i].MenuItem);
+            Lcd12864_ShowString (i + 1, 3, ":");
+            Lcd12864_ShowString (i + 1, 7, "元");
+            Lcd12864_ShowNum (i + 1, 4, MMenu[page + i].stesale / 100, 3);
+            Lcd12864_WriteData (0x2E);
+            Lcd12864_ShowNum (i + 1, 6, MMenu[page + i].stesale % 100, 2);
+        }
+    }
+}
+//6.菜单翻滚
+
+/**************************************************************************************
+* FunctionName   : App_MenuMove()
+* Description    : 菜单移动
+* EntryParameter : None
+* ReturnValue    : 有确认返回0，否则返回1
+**************************************************************************************/
+u8 App_MenuMove (u8 key)
+{
+    u8 rValue = 1;
+
+    switch (key)
+    {
+    case 1:                            // 向上
+        if (MenuPrmt.Cursor != 0)         // 光标不在顶端
+        {
+            MenuPrmt.Cursor--;             // 光标上移
+        }
+        else                               // 光标在顶端
+        {
+            if (MenuPrmt.PageNo != 0)      // 页面没有到最小
+            {
+                MenuPrmt.PageNo--;          // 向上翻
+            }
+            else
+            {
+                MenuPrmt.Cursor = MenuPrmt.DispNum - 1;        // 光标到底
+                MenuPrmt.PageNo = MenuPrmt.MaxPage - 1; // 最后页
+            }
+        }
+
+        break;
+
+    case 2:                               // 向下
+        if (MenuPrmt.Cursor < MenuPrmt.DispNum - 1) // 光标没有到底，移动光标
+        {
+            MenuPrmt.Cursor++;           // 光标向下移动
+        }
+        else                             // 光标到底
+        {
+            if (MenuPrmt.PageNo < MenuPrmt.MaxPage - 1)  // 页面没有到底，页面移动
+            {
+                MenuPrmt.PageNo++;       // 下翻一页
+            }
+            else                         // 页面和光标都到底，返回开始页
+            {
+                MenuPrmt.Cursor = 0;
+                MenuPrmt.PageNo = 0;
+            }
+        }
+
+        break;
+
+    case 12:
+        MenuPrmt.Index = MenuPrmt.Cursor + MenuPrmt.PageNo;      // 计算执行项的索引
+        rValue = 0;
+        break;
+
+    case 13:
+        skipflag = 2;
+        break;
+
+    case 16:
+        pay();
+
+        if (allprice)
+            skipflag = 1;
+        else  skipflag = 2;
+
+        break;
+
+    default:
+        break;
+    }
+
+    return rValue;           // 返回执行索引
+}
+
+
+//7.菜单实现
+/**************************************************************************************
+* FunctionName   : App_ManageMenu()
+* Description    : 管理菜单
+* EntryParameter : None
+* ReturnValue    : None
+**************************************************************************************/
+void App_ManageMenu (void)
+{
+    Lcd12864_ShowString (0, 0, " -= 购物清单 =- ");      // 菜单标题显示
+    App_MenuSet (PAGE_DISP_NUM, M_MENU_NUM + 1 - PAGE_DISP_NUM); // 页显示3项，7个菜单项5页显示
+    App_MenuDisplay (MMenu, MenuPrmt.PageNo, MenuPrmt.DispNum, MenuPrmt.Cursor); // 显示菜单项
+
+    if (KeyNum)
+    {
+        if (App_MenuMove (KeyNum) == 0x00)  // 菜单移动
+        {
+//            LCMClearScreen (LCM_WHITE);           // 清屏
+            Lcd12864_Init();
+            MMenu[MenuPrmt.Index].ItemHook (MenuPrmt.Index);     // 执行相应项
+        }
+
+        KeyNum = 0;                  // 清除按键值
+    }
+}
+
+
+
+
 void displayweight()
 {
     Get_Weight();
@@ -277,14 +377,7 @@ void displayweight()
     Lcd12864_ShowNum (3, 5, allprice % 100, 2);
     Lcd12864_ShowString (2, 2, ": ");
 }
-void showmenu1()
-{
-    Lcd12864_Init();
-    Lcd12864_ShowString (0, 0, " - -欢迎光临- - ");
-    Lcd12864_ShowString (1, 0, "编码:        ");
-    Lcd12864_ShowString (2, 0, "重量:       公斤");
-    Lcd12864_ShowString (3, 0, "总价:       元");
-}
+
 
 void checkwallet()
 {
@@ -357,162 +450,87 @@ void showcost()
     i = 0;
     showmenu1();
 }
-void pay()
-{
-    Lcd12864_Init();
-    Lcd12864_ShowString (0, 0, "请刷卡");
-    KeyNum = 0;
+//void costmenu()
+//{
+//show:
+//    KeyNum = 0;
+//    Lcd12864_Init();
+//    Lcd12864_ShowString (0, 0, " - -购物清单- - ");
+//    t = 0;
 
-    while (status)
-    {
-        status = check_card (1);
-        KeyNum = Key();
+//    for (i = 0; i < 6; i++)
+//    {
+//        if (costmenuflag[i])
+//        {
+//            Lcd12864_ShowString (1, 0, " >");
+//            costmenurun++;
+//            Lcd12864_ShowString (costmenurun % 4, 1, "    :       元");
+//            Lcd12864_ShowString (costmenurun % 4, 1, name[i]);
+//            Lcd12864_ShowNum (costmenurun % 4, 4, stepsale[i] / 100, 3);
+//            Lcd12864_WriteData (0x2E);
+//            Lcd12864_ShowNum (costmenurun % 4, 6, stepsale[i] % 100, 2);
+//            point[t] = i;
+//            t++;
+//        }
+//    }
 
-        if (KeyNum) break;
-    }
+//    maxcostmenurun = costmenurun;
+//    costmenurun++;
+//    Lcd12864_ShowString (costmenurun, 1, "总价:       元");
+//    Lcd12864_ShowNum (costmenurun, 4, allprice / 100, 3);
+//    Lcd12864_WriteData (0x2E);
+//    Lcd12864_ShowNum (costmenurun, 6, allprice % 100, 2);
+//    costmenurun = 1;
 
-    if (KeyNum)
-    {
-        KeyNum = 0;
-        goto exit;
-    }
+//    while (!KeyNum)
+//    {
+//        KeyNum = Key();
 
-    PcdRead (1, &shu);
-    wallet = shu[0] + shu[1] * 256;
+//        if (KeyNum == 13) break;
+//        else if (KeyNum == 1)
+//        {
+//            Lcd12864_ShowString (costmenurun, 0, "  ");
 
-    if (wallet < allprice)
-        Lcd12864_ShowString (2, 0, "余额不足！！");
-    else
-    {
-        Lcd12864_ShowString (2, 0, "消费:       元");
-        Lcd12864_ShowNum (2, 3, allprice / 100, 3);
-        Lcd12864_WriteData (0x2E);
-        Lcd12864_ShowNum (2, 5, allprice % 100, 2);
-        value1[0] = allprice % 256;
-        value1[1] = allprice / 256 % 256;
-        value1[2] = allprice / 65536 % 256;
-        sayprice = allprice / 100.0;
-        PcdValue (0xC0, 1, value1);
+//            if (costmenurun % 3 == 1)
+//            {
+//                costmenurun = maxcostmenurun;
+//                Lcd12864_ShowString (costmenurun, 0, " >");
+//            }
+//            else
+//            {
+//                costmenurun--;
+//                Lcd12864_ShowString (costmenurun, 0, " >");
+//            }
+//        }
+//        else if (KeyNum == 2)
+//        {
+//            Lcd12864_ShowString (costmenurun, 0, "  ");
+//            costmenurun %= maxcostmenurun;
+//            costmenurun++;
+//            Lcd12864_ShowString (costmenurun, 0, " >");
+//        }
+//        else if (KeyNum == 16)
+//        {
+//            pay();
+//            break;
+//        }
+//        else if (KeyNum == 12)
+//        {
+//            costmenuflag[point[costmenurun - 1]] = 0;
+//            allprice -= stepsale[point[costmenurun - 1]];
+//            firweight[point[costmenurun - 1]] = 0;
+//            costmenurun = 0;
+//            goto show;
+//        }
 
-        for (i = 0; i < 20; i++)
-        {
-            costmenuflag[i] = 0;
-            lastweight[i] += firweight[i];
-            firweight[i] = 0;
-        }
+//        KeyNum = 0;
+//    }
 
-        if (allprice >= maxcost)
-        {
-            DS1302_ReadTime();
-            maxcost = allprice;
-            maxtime[0] = DS1302_Time[1];
-            maxtime[1] = DS1302_Time[4];
-            maxtime[2] = DS1302_Time[5];
-        }
-
-        allprice = 0;
-        Lcd12864_ShowString (3, 0, "余额:       元");
-
-        if (RevBuffer[0] == 19 && RevBuffer[1] == 206 && RevBuffer[2] == 59 && RevBuffer[3] == 45)
-            Lcd12864_ShowString (1, 0, "蓝卡用户，您好！");
-        else if (RevBuffer[0] == 3 && RevBuffer[1] == 102 && RevBuffer[2] == 156 && RevBuffer[3] == 40)
-            Lcd12864_ShowString (1, 0, "白卡用户，您好！");
-
-        PcdRead (1, &shu);
-        wallet = shu[0] + shu[1] * 256;
-        Lcd12864_ShowNum (3, 3, wallet / 100, 3);
-        Lcd12864_WriteData (0x2E);
-        Lcd12864_ShowNum (3, 5, wallet % 100, 2);
-        SYN6288_Say ("扣款: %6.2f元", sayprice);
-    }
-
-    Delay (3000);
-exit:
-    Fruitcode = 0;
-    i = 0;
-    showmenu1();
-}
-void costmenu()
-{
-show:
-    KeyNum = 0;
-    Lcd12864_Init();
-    Lcd12864_ShowString (0, 0, " - -购物清单- - ");
-    t = 0;
-
-    for (i = 0; i < 6; i++)
-    {
-        if (costmenuflag[i])
-        {
-            Lcd12864_ShowString (1, 0, " >");
-            costmenurun++;
-            Lcd12864_ShowString (costmenurun % 4, 1, "    :       元");
-            Lcd12864_ShowString (costmenurun % 4, 1, name[i]);
-            Lcd12864_ShowNum (costmenurun % 4, 4, stepsale[i] / 100, 3);
-            Lcd12864_WriteData (0x2E);
-            Lcd12864_ShowNum (costmenurun % 4, 6, stepsale[i] % 100, 2);
-            point[t] = i;
-            t++;
-        }
-    }
-
-    maxcostmenurun = costmenurun;
-    costmenurun++;
-    Lcd12864_ShowString (costmenurun, 1, "总价:       元");
-    Lcd12864_ShowNum (costmenurun, 4, allprice / 100, 3);
-    Lcd12864_WriteData (0x2E);
-    Lcd12864_ShowNum (costmenurun, 6, allprice % 100, 2);
-    costmenurun = 1;
-
-    while (!KeyNum)
-    {
-        KeyNum = Key();
-
-        if (KeyNum == 13) break;
-        else if (KeyNum == 1)
-        {
-            Lcd12864_ShowString (costmenurun, 0, "  ");
-
-            if (costmenurun % 3 == 1)
-            {
-                costmenurun = maxcostmenurun;
-                Lcd12864_ShowString (costmenurun, 0, " >");
-            }
-            else
-            {
-                costmenurun--;
-                Lcd12864_ShowString (costmenurun, 0, " >");
-            }
-        }
-        else if (KeyNum == 2)
-        {
-            Lcd12864_ShowString (costmenurun, 0, "  ");
-            costmenurun %= maxcostmenurun;
-            costmenurun++;
-            Lcd12864_ShowString (costmenurun, 0, " >");
-        }
-        else if (KeyNum == 16)
-        {
-            pay();
-            break;
-        }
-        else if (KeyNum == 12)
-        {
-            costmenuflag[point[costmenurun - 1]] = 0;
-            allprice -= stepsale[point[costmenurun - 1]];
-            firweight[point[costmenurun - 1]] = 0;
-            costmenurun = 0;
-            goto show;
-        }
-
-        KeyNum = 0;
-    }
-
-    costmenurun = 0;
-    Fruitcode = 0;
-    i = 0;
-    showmenu1();
-}
+//    costmenurun = 0;
+//    Fruitcode = 0;
+//    i = 0;
+//    showmenu1();
+//}
 void rich()
 {
     Lcd12864_Init();
@@ -720,66 +738,77 @@ exit:
 
 
 
+void deletecost (u8 index)
+{
+    costmenuflag[point[index + 1]] = 0;
+    allprice -= stepsale[point[index + 1]];
+    stepsale[point[index + 1]] = 0;
+    firweight[point[index + 1]] = 0;
+    skipflag = 1;
+}
+void deleteall()
+{
+    for (i = 0; i < 7; i++)
+    {
+        costmenuflag[i] = 0;
+        stepsale[i] = 0;
+        firweight[i] = 0;
+        t++;
+        point[t] = 0;
+    }
 
+    allprice = 0;
+    skipflag = 1;
+}
+void costmenu()
+{
+start:	skipflag = 0;
+    KeyNum = 0;
+    Lcd12864_Init();
+    t = 0;
+    costmenurun = 0;
 
-//void costmenu()
-//{
-//    KeyNum = 0;
-//    Lcd12864_Init();
-////    Lcd12864_ShowString (0, 0, " - -购物清单- - ");
-//    t = 0;
-//    costmenurun = 0;
+    for (i = 0; i < 7; i++)
+    {
+        if (costmenuflag[i])
+        {
+            MenuPrmt.Index = MenuPrmt.Cursor + MenuPrmt.PageNo;
+            MMenu[costmenurun].MenuItem = name[i];
+            MMenu[costmenurun].stesale = stepsale[i];
+            MMenu[costmenurun].ItemHook = deletecost;
+            t++;
+            costmenurun++;
+            point[t] = i;
+        }
+    }
 
-//    for (i = 0; i < 20; i++)
-//    {
-//        if (costmenuflag[i])
-//        {
-//            MenuPrmt.Index = MenuPrmt.Cursor + MenuPrmt.PageNo;
-//            MMenu[costmenurun].MenuItem = name[i];
-////            MMenu[costmenurun].stesale = stepsale[i];
-//            MMenu[costmenurun].ItemHook = null;
-//            t++;
-//            costmenurun++;
-////            Lcd12864_ShowString (1, 0, " >");
-////
-////            Lcd12864_ShowString (costmenurun % 4, 1, "    :       元");
-////            Lcd12864_ShowString (costmenurun % 4, 1, name[i]);
-////            Lcd12864_ShowNum (costmenurun % 4, 4, stepsale[i] / 100, 3);
-////            Lcd12864_WriteData (0x2E);
-////            Lcd12864_ShowNum (costmenurun % 4, 6, stepsale[i] % 100, 2);
-//            point[t] = i;
-//        }
-//    }
-//		MMenu[17].ItemHook = deletecost;
-//		MMenu[18].ItemHook = pay;
-//    M_MENU_NUM = costmenurun;
-////    costmenurun++;
-////    Lcd12864_ShowString (costmenurun, 1, "总价:       元");
-////    Lcd12864_ShowNum (costmenurun, 4, allprice / 100, 3);
-////    Lcd12864_WriteData (0x2E);
-////    Lcd12864_ShowNum (costmenurun, 6, allprice % 100, 2);
-//AppMenuPrmtInit();
-//		while(1)
-//		{
-//			KeyNum = Key();
-//			App_ManageMenu();
-//		}
-//		
-//		
-		
-		
-		
-		
-		
+    MMenu[costmenurun].MenuItem = name[7];
+    MMenu[costmenurun].stesale = allprice;
+    MMenu[costmenurun].ItemHook = deleteall;
+    M_MENU_NUM = ++costmenurun;
+
+    if (costmenurun < 3) PAGE_DISP_NUM = costmenurun;
+    else PAGE_DISP_NUM = 3;
+
+    AppMenuPrmtInit();
+
+    while (1)
+    {
+        KeyNum = Key();
+        App_ManageMenu();
+
+        if (skipflag == 1) goto start;
+        else if (skipflag == 2) goto end;
+    }
+
+//
 //    while (!KeyNum)
 //    {
 //        KeyNum = Key();
-
 //        if (KeyNum == 13) break;
 //        else if (KeyNum == 1)
 //        {
 //            Lcd12864_ShowString (costmenurun, 0, "  ");
-
 //            if (costmenurun % 3 == 1)
 //            {
 //                costmenurun = maxcostmenurun;
@@ -811,15 +840,15 @@ exit:
 //            costmenurun = 0;
 //            goto show;
 //        }
-
 //        KeyNum = 0;
 //    }
-
-//    costmenurun = 0;
-//    Fruitcode = 0;
-//    i = 0;
-//    showmenu1();
-//}
+end:
+    skipflag = 0;
+    costmenurun = 0;
+    Fruitcode = 0;
+    i = 0;
+    showmenu1();
+}
 
 
 void main()
@@ -829,8 +858,7 @@ void main()
     Lcd12864_Init();
     Timer0_Init();
     Weight_Maopi = HX711_Read();
-
-	IAPErase(1);
+    IAPErase (1);
     IAPWrite (1, 10021 % 256);
     IAPWrite (2, 10021 / 256);
     IAPWrite (3, 56);
@@ -840,9 +868,10 @@ void main()
     IAPWrite (7, 10023 % 256);
     IAPWrite (8, 10023 / 256);
     IAPWrite (9, 103);
-	IAPErase(600);
-    IAPWrite (600,10);
-    for (i = 0; i < 20; i++)
+    IAPErase (600);
+    IAPWrite (600, 10);
+
+    for (i = 0; i < 7; i++)
     {
         costmenuflag[i] = 0;
         stepsale[i] = 0;
@@ -894,7 +923,7 @@ void main()
 
             if (i == 5)
             {
-                for (i = 0; i < 20; i++)
+                for (i = 0; i < 7; i++)
                 {
                     if (Fruitcode == (IAPRead (3 * i + 1) + 256 * IAPRead (3 * i + 2)))
                     {
@@ -949,7 +978,7 @@ void main()
                             Lcd12864_ShowNum (3, 3, price / 100, 3);
                             Lcd12864_WriteData (0x2E);
                             Lcd12864_ShowNum (3, 5, price % 100, 2);
-                            Lcd12864_ShowString (2, 2, ": ");
+//                            Lcd12864_ShowString (2, 2, ": ");
                         }
                         else
                         {
@@ -963,6 +992,7 @@ void main()
                     {
                         allprice += price;
                         pay();
+                        showmenu1();
                     }
                     else if (KeyNum == 13)
                     {
@@ -1014,10 +1044,6 @@ void main()
         else
             displayweight();
     }
-
-//        if (KeyNum == 13)
-//            menu();//加码，加卡，充值
-//
 }
 
 void Timer0_Isr (void) interrupt 1
@@ -1033,82 +1059,3 @@ void Timer0_Isr (void) interrupt 1
         T0Count = 0;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
