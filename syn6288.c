@@ -27,7 +27,7 @@
 
 void SYN_FrameInfo(unsigned char Music, unsigned char *HZdata)
 {												//指针HZdata实际是个地址，里面可以存许多字节
-	
+
 	unsigned char  Frame_Info[50];
 	unsigned char  HZ_Length;
 	unsigned char  ecc  = 0;  			
@@ -53,6 +53,7 @@ void SYN_FrameInfo(unsigned char Music, unsigned char *HZdata)
 	memcpy(&Frame_Info[5], HZdata, HZ_Length);//向Frame_Info中写入字节数为HZ_Length的数据HZdata
 	Frame_Info[5 + HZ_Length] = ecc;
 	UART1_SendString(Frame_Info, 5 + HZ_Length + 1);
+	Music=0;  //去除警告
 }									//这里通过串口，单片机返回的值到6288中而不是电脑
 
 
