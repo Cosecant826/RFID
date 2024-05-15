@@ -1,4 +1,5 @@
-#include <STC12C5A60S2.H>
+#include <STC15F2K60S2.H>
+
 #include <stdio.h>
 #include <string.h>
 #include "uart.h"

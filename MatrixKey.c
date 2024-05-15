@@ -1,4 +1,5 @@
-#include <STC12C5A60S2.H>
+#include <STC15F2K60S2.H>
+
 #include "Delay.h"
 unsigned char Key_KeyNumber;
 
@@ -17,64 +18,64 @@ unsigned char Key(void)
 unsigned char MatrixKey()
 {
     unsigned char KeyNumber = 0;
-    P1 = 0xFF;
-    P13 = 0;
+    P7 = 0xFF;
+    P73 = 0;
 
-    if (P17 == 0 && P13 == 0)
+    if (P77 == 0 && P73 == 0)
         KeyNumber = 1;
 
-    if (P16 == 0 && P13 == 0)
+    if (P76 == 0 && P73 == 0)
         KeyNumber = 5;
 
-    if (P15 == 0 && P13 == 0)
+    if (P75 == 0 && P73 == 0)
         KeyNumber = 9;
 
-    if (P14 == 0 && P13 == 0)
+    if (P74 == 0 && P73 == 0)
         KeyNumber = 13;
 
-    P1 = 0xFF;
-    P12 = 0;
+    P7 = 0xFF;
+    P72 = 0;
 
-    if (P17 == 0 && P12 == 0)
+    if (P77 == 0 && P72 == 0)
         KeyNumber = 2;
 
-    if (P16 == 0 && P12 == 0)
+    if (P76 == 0 && P72 == 0)
         KeyNumber = 6;
 
-    if (P15 == 0 && P12 == 0)
+    if (P75 == 0 && P72 == 0)
         KeyNumber = 10;
 
-    if (P14 == 0 && P12 == 0)
+    if (P74 == 0 && P72 == 0)
         KeyNumber = 14;
 
-    P1 = 0xFF;
-    P11 = 0;
+    P7 = 0xFF;
+    P71 = 0;
 
-    if (P17 == 0 && P11 == 0)
+    if (P77 == 0 && P71 == 0)
         KeyNumber = 3;
 
-    if (P16 == 0 && P11 == 0)
+    if (P76 == 0 && P71 == 0)
         KeyNumber = 7;
 
-    if (P15 == 0 && P11 == 0)
+    if (P75 == 0 && P71 == 0)
         KeyNumber = 11;
 
-    if (P14 == 0 && P11 == 0)
+    if (P74 == 0 && P71 == 0)
         KeyNumber = 15;
 
-    P1 = 0xFF;
-    P10 = 0;
+    P7 = 0xFF;
+    P70 = 0;
 
-    if (P17 == 0 && P10 == 0)
+    if (P77 == 0 && P70 == 0)
         KeyNumber = 4;
 
-    if (P16 == 0 && P10 == 0)
+    if (P76 == 0 && P70 == 0)
         KeyNumber = 8;
 
-    if (P15 == 0 && P10 == 0)
+    if (P75 == 0 && P70 == 0)
         KeyNumber = 12;
 
-    if (P14 == 0 && P10 == 0)
+    if (P74 == 0 && P70 == 0)
         KeyNumber = 16;
 
     return KeyNumber;

@@ -1,6 +1,8 @@
 #ifndef _RC522_H
 #define _RC522_H
-#include <STC12C5A60S2.H>
+
+#include <STC15F2K60S2.H>
+
 #include <intrins.h>   //包含头文件
 #define nop()  _nop_()
 
@@ -127,10 +129,10 @@
 #define READCARD	0xa3
 #define ADDMONEY	0xa4
 
-sbit  spi_cs = P3 ^ 7;
-sbit  spi_ck = P3 ^ 6;
-sbit  spi_mosi = P3 ^ 5;
-sbit  spi_miso = P3 ^ 4;
+sbit  spi_cs = P1^2;
+sbit  spi_ck = P4^3;
+sbit  spi_mosi = P4^0;
+sbit  spi_miso = P4^1;
 sbit  spi_rst = P3 ^ 3;
 
 

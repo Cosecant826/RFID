@@ -1,12 +1,12 @@
-#include <STC12C5A60S2.H>
+#include <STC15F2K60S2.H>
 
 #ifndef __LCD12864_H__
 #define __LCD12864_H__
 
 #define LcdData P0
-sbit LcdRS = P2 ^ 6;
-sbit LcdRW = P2 ^ 5;
-sbit LcdEN = P2 ^ 7;
+sbit LcdRS = P2 ^ 0;
+sbit LcdRW = P2 ^ 1;
+sbit LcdEN = P2 ^ 2;
 sbit PSB = P3 ^ 2;
 
 void Lcd12864_CheckBusy();

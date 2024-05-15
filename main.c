@@ -1,4 +1,5 @@
-#include <STC12C5A60S2.H>
+#include <STC15F2K60S2.H>
+
 #include "rc522.h"
 #include "define.h"
 #include "Delay.h"
@@ -57,7 +58,7 @@ typedef struct
     void (*ItemHook) (u8 index);                   // 要运行的菜单函数
 } MENU_TABLE;
 
-MENU_TABLE data MMenu[8];
+MENU_TABLE MMenu[8];
 
 void showmenu1()
 {
@@ -311,9 +312,17 @@ u8 App_MenuMove (u8 key)
 
         break;
 
+    case 4:
+   
+        break;
+
     case 12:
-        MenuPrmt.Index = MenuPrmt.Cursor + MenuPrmt.PageNo;      // 计算执行项的索引
-        rValue = 0;
+        pay();
+
+        if (allprice)
+            skipflag = 1;
+        else  skipflag = 2;
+
         break;
 
     case 13:
@@ -321,12 +330,8 @@ u8 App_MenuMove (u8 key)
         break;
 
     case 16:
-        pay();
-
-        if (allprice)
-            skipflag = 1;
-        else  skipflag = 2;
-
+        MenuPrmt.Index = MenuPrmt.Cursor + MenuPrmt.PageNo;      // 计算执行项的索引
+        rValue = 0;
         break;
 
     default:
@@ -886,22 +891,27 @@ end:
 
 void main()
 {
+    P0M0 = 0X00;
+    P0M1 = 0X00;
+    P1M0 = 0X00;
+    P1M1 = 0X00;
+    P2M0 = 0X00;
+    P2M1 = 0X00;
+    P3M0 = 0X00;
+    P3M1 = 0X00;
+    P4M0 = 0X00;
+    P4M1 = 0X00;
+    P5M0 = 0X00;
+    P5M1 = 0X00;
+    P6M0 = 0X00;
+    P6M1 = 0X00;
+    P7M0 = 0X00;
+    P7M1 = 0X00;
     DS1302_Init();
+    DS1302_SetTime();
     UART1_Init();
     Lcd12864_Init();
     Weight_Maopi = HX711_Read();
-    IAPErase (1);
-    IAPWrite (1, 10021 % 256);
-    IAPWrite (2, 10021 / 256);
-    IAPWrite (3, 56);
-    IAPWrite (4, 10022 % 256);
-    IAPWrite (5, 10022 / 256);
-    IAPWrite (6, 72);
-    IAPWrite (7, 10023 % 256);
-    IAPWrite (8, 10023 / 256);
-    IAPWrite (9, 103);
-    IAPErase (600);
-    IAPWrite (600, 10);
 
     for (i = 0; i < 7; i++)
     {
@@ -933,8 +943,8 @@ void main()
     Delay (1000);
     Fruitcode = 0;
     i = 0;
-    showmenu1();
     Timer0_Init();
+    showmenu1();
 
     while (1)
     {
@@ -997,28 +1007,26 @@ void main()
                         KeyNum = Key();
                         Get_Weight();
 
-                        if (Weight_Shiwu <= 50000 || Weight_Shiwu >= 62000)
+                        if (Weight_Shiwu <= 52000)
                         {
-                            if (Weight_Shiwu >= 62000) Weight_Shiwu = 0;
-
-                            Lcd12864_ShowString (2, 6, "公斤");
-                            Weight_Shiwu *= 50;
-                            Weight_Shiwu /= 1000;
-                            getweight = Weight_Shiwu;
-                            Lcd12864_ShowNum (2, 3, getweight / 10, 4);
-                            Lcd12864_ShowFloatNum (2, 5, getweight % 10, 1); //显示最后一位
-                            price = (unsigned int) (kgprice * getweight * 10);
-                            Lcd12864_ShowNum (3, 3, price / 100, 3);
-                            Lcd12864_WriteData (0x2E);
-                            Lcd12864_ShowNum (3, 5, price % 100, 2);
 //                            Lcd12864_ShowString (2, 2, ": ");
                         }
                         else
                         {
-                            Lcd12864_ShowString (2, 3, "超重      ");
                             Weight_Shiwu = 0;
                             price = 0;
                         }
+
+                        Lcd12864_ShowString (2, 6, "公斤");
+                        Weight_Shiwu *= 50;
+                        Weight_Shiwu /= 1000;
+                        getweight = Weight_Shiwu;
+                        Lcd12864_ShowNum (2, 3, getweight / 10, 4);
+                        Lcd12864_ShowFloatNum (2, 5, getweight % 10, 1); //显示最后一位
+                        price = (unsigned int) (kgprice * getweight * 10);
+                        Lcd12864_ShowNum (3, 3, price / 100, 3);
+                        Lcd12864_WriteData (0x2E);
+                        Lcd12864_ShowNum (3, 5, price % 100, 2);
 
                         if (KeyNum == 16)
                         {
